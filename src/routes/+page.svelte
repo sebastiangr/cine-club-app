@@ -1,6 +1,18 @@
 <script lang="ts">
   import SearchBar from '$lib/components/SearchBar.svelte';
   import { movieStore } from '$lib/stores/movies';
+  import { onMount } from 'svelte';
+  import { checkConnection } from '$lib/services/tmdb';
+
+  let connectionStatus = '';
+
+  onMount(async () => {
+    try {
+      connectionStatus = await checkConnection();
+    } catch (error) {
+      connectionStatus = (error as Error).message;
+    }
+  });
 </script>
 
 <div class="max-w-4xl mx-auto space-y-8">
@@ -39,4 +51,11 @@
       </div>
     {/if}
   </div>
+
+  <div class="text-center text-gray-500 py-4">
+    {#if connectionStatus}
+      <p>{connectionStatus}</p>
+    {/if}
+  </div>
+
 </div>

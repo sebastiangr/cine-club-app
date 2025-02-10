@@ -38,6 +38,17 @@ export async function getMovieDetails(id: number): Promise<Movie> {
   return movie;
 }
 
+export async function checkConnection(): Promise<string> {
+  const url = `${BASE_URL}/configuration?api_key=${TMDB_API_KEY}`;
+  
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Error connecting to TMDB API: ${response.statusText}`);
+  }
+  
+  return 'Conexión exitosa con el API de TMDB';
+}
+
 export async function searchMovies(query: string): Promise<SearchResponse> {
   if (!query) return { results: [], total_results: 0, total_pages: 0 };
 
