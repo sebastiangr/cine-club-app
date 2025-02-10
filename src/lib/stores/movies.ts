@@ -20,6 +20,9 @@ function createMovieStore() {
         },
         ...movies
       ]);
+    },
+    removeMovie: (id: number) => {
+      update(movies => movies.filter(movie => movie.id !== id));
     }
   };
 }
