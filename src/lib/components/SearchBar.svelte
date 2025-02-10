@@ -9,6 +9,7 @@
   
   let searchTerm = '';
   let error = '';
+  let recommendedBy = ''; // New variable for the recommender's name
   const loading = writable(false);
   const searchResults = writable<any[]>([]);
   
@@ -47,10 +48,26 @@
     searchTerm = input.value;
     debouncedSearch(input.value);
   }
+
+  // Manejador para agregar la película con recomendación
+  function addMovieWithRecommendation(movie: any) {
+    movieStore.addMovie({
+      ...movie,
+      recommendedBy,
+      recommendedAt: new Date(),
+    });
+    recommendedBy = ''; // Reset the input after adding
+  }
 </script>
 
 <div class="space-y-4">
   <div class="relative">
+    <input
+      type="text"
+      bind:value={recommendedBy}
+      placeholder="Recomendado por..."
+      class="w-full my-5 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+    />    
     <input
       type="text"
       value={searchTerm}
@@ -73,14 +90,16 @@
   {/if}
   
   {#if $searchResults.length > 0 && searchTerm.length >= 2}
-    <div class="bg-white shadow-lg rounded-lg divide-y">
+    <div class="bg-white shadow-lg rounded-lg divide-y absolute z-50">
       {#each $searchResults.slice(0, 5) as movie}
         <button
           class="w-full px-4 py-2 flex items-center gap-4 hover:bg-gray-50 transition"
           on:click={async () => {
-            movieStore.addMovie(movie);
+            addMovieWithRecommendation(movie);
             const details = await getMovieDetails(movie.id);
             console.log('Movie details:', details);
+            searchTerm = ''; // Clear search term input
+            recommendedBy = ''; // Clear recommended by input
           }}
         >
           {#if movie.poster_path}
@@ -103,16 +122,16 @@
             <p class="text-sm text-gray-500">
               Director: {movie.director || 'Desconocido'}
             </p>
-            <p class="text-sm text-gray-500">
-              Género: {movie.genre || 'Desconocido'}
-            </p>
           </div>
         </button>
       {/each}
     </div>
   {:else if searchTerm.length >= 2 && !$loading}
+  <div class="bg-white shadow-lg rounded-lg divide-y absolute z-50">
     <p class="text-center text-gray-500 py-4">
       No se encontraron resultados para "{searchTerm}"
     </p>
+  </div>    
   {/if}
 </div>
+

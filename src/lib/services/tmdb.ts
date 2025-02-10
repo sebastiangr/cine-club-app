@@ -8,7 +8,7 @@ export interface Movie {
   poster_path: string;
   release_date: string;
   vote_average: number;
-  director?: string;
+  director: string | null;
 }
 
 export interface SearchResponse {
@@ -33,7 +33,7 @@ export async function getMovieDetails(id: number): Promise<Movie> {
   }
 
   const credits = await creditsResponse.json();
-  movie.director = credits.crew.find((crewMember: { job: string; }) => crewMember.job === 'Director')?.name;
+  movie.director = credits.crew.find((crewMember: { job: string; }) => crewMember.job === 'Director')?.name ?? null;
 
   return movie;
 }
@@ -79,3 +79,4 @@ export async function searchMovies(query: string): Promise<SearchResponse> {
     throw error;
   }
 }
+

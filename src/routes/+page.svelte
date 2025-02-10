@@ -34,10 +34,11 @@
     {:else}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each $movieStore as movie}
-          <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
+          <div class="bg-white rounded-lg shadow-md overflow-hidden relative transform transition-transform hover:scale-95">
             <button
               class="absolute top-0 right-0 p-2 text-red-500 hover:text-red-700"
               on:click={() => movieStore.removeMovie(movie.id)}
+              aria-label="Remove movie"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -54,13 +55,23 @@
               <div class="p-4">
                 <h3 class="font-semibold text-lg">{movie.title}</h3>
                 <p class="text-sm text-gray-500">
-                  Recomendada el {movie.recommendedAt.toLocaleDateString()}
+                  Recomendada por: {movie.recommendedBy || 'N.N.'} el {new Intl.DateTimeFormat('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(movie.recommendedAt)}
                 </p>
+                <p class="text-sm text-gray-500">
+                  Director: {movie.director || 'Desconocido'}
+                </p>
+                <p class="text-sm text-gray-500">
+                  Puntuación: {movie.vote_average || 'N/A'}
+                </p>
+                <p class="text-sm text-gray-500">
+                  Overview: {movie.overview || 'N/A'}
+                </p>                
               </div>
             </a>
           </div>
         {/each}
       </div>
+
     {/if}
   </div>
 

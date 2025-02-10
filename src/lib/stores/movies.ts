@@ -11,12 +11,14 @@ function createMovieStore() {
   
   return {
     subscribe,
-    addMovie: (movie: Movie) => {
+    addMovie: (movie: MovieRecommendation) => {
       update(movies => [
         {
           ...movie,
           recommendedAt: new Date(),
-          recommendedBy: 'Usuario', // Placeholder por ahora
+          recommendedBy: movie.recommendedBy, 
+          director: movie.director, // Asegurarse de que el director se incluya
+          // recommendedBy: 'Usuario', // Placeholder por ahora
         },
         ...movies
       ]);
