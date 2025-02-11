@@ -9,6 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     const hashedPassword = await hashPassword(password);
+    console.log('Hashed password:', hashedPassword);
     const user = await prisma.user.create({
       data: {
         email,
@@ -24,6 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
       token
     });
   } catch (error) {
-    return json({ error: 'Error al registrar usuario' }, { status: 400 });
+    console.error('Registration error:', error); // Log the specific error
+    return json({ error: 'Error al registrar usuario', details: (error as any).message }, { status: 400 });
   }
 };

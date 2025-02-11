@@ -19,6 +19,7 @@
       });
 
       const data = await response.json();
+      console.log("Error", data);
 
       if (!response.ok) {
         throw new Error(data.error || 'Error al registrarse');

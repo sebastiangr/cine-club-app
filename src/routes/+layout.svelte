@@ -49,7 +49,7 @@
                 {$auth.user.name || $auth.user.email}
               </span>
               <button
-                on:click={handleLogout}
+                onclick={handleLogout}
                 class="text-gray-700 hover:text-gray-900"
               >
                 Cerrar sesión
