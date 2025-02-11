@@ -24,3 +24,19 @@ function createAuthStore() {
 }
 
 export const auth = createAuthStore();
+
+
+export const authStore = writable({
+  isAuthenticated: false,
+  user: null, // You can store user details here
+});
+
+// Function to log in
+export const login = (user: any) => {
+  authStore.set({ isAuthenticated: true, user });
+};
+
+// Function to log out
+export const logout = () => {
+  authStore.set({ isAuthenticated: false, user: null });
+};

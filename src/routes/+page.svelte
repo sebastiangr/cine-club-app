@@ -1,18 +1,27 @@
 <script lang="ts">
   import SearchBar from '$lib/components/SearchBar.svelte';
-  import { movieStore } from '$lib/stores/movies';
+  import { movieStoreMethods } from '$lib/stores/movies';
   import { onMount } from 'svelte';
   import { checkConnection } from '$lib/services/tmdb';
   import { LightSwitch } from '@skeletonlabs/skeleton';
+  import { authStore } from '$lib/stores/auth'; // Import the auth store
 
   let connectionStatus = '';
 
   onMount(async () => {
     try {
       connectionStatus = await checkConnection();
+      await movieStoreMethods.loadRecommendations(); // Load recommendations on mount
     } catch (error) {
       connectionStatus = (error as Error).message;
     }
+  });
+
+  let isAuthenticated = false;
+
+  // Subscribe to the auth store to get the authentication status
+  authStore.subscribe(auth => {
+    isAuthenticated = auth.isAuthenticated;
   });
 </script>
 
@@ -20,34 +29,36 @@
   <h1 class="text-3xl font-bold text-center">
     Recomendaciones de Películas
   </h1>
-  
+
   <SearchBar />
   
   <div class="space-y-4">
     <h2 class="text-2xl font-semibold">Películas Recomendadas</h2>
     
-    {#if $movieStore.length === 0}
+    {#if $movieStoreMethods.length === 0}
       <p class="text-center text-gray-500 py-8">
         Aún no hay películas recomendadas. ¡Sé el primero en añadir una!
       </p>
     {:else}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {#each $movieStore as movie}
+        {#each $movieStoreMethods as movie}
           <div class="bg-white rounded-lg shadow-md overflow-hidden relative transform transition-transform hover:scale-95">
+            {#if isAuthenticated}
             <button
               class="absolute top-0 right-0 p-2 text-red-500 hover:text-red-700"
-              on:click={() => movieStore.removeMovie(movie.id)}
+              on:click={() => movieStoreMethods.removeMovie(movie.id)}
               aria-label="Remove movie"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
+            {/if}
             
             <a href={`https://www.themoviedb.org/movie/${movie.id}`} target="_blank" rel="noopener noreferrer">
-              {#if movie.poster_path}
+              {#if movie.posterPath}
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
                   alt={movie.title}
                   class="w-full h-96 object-cover"
                 />
@@ -66,14 +77,16 @@
                 Director: {movie.director || 'Desconocido'}
               </p>
               
+              {#if isAuthenticated}
               <button
                 class="mt-2 bg-blue-500 text-white py-1 px-3 rounded"
                 on:click={() => {
-                  movieStore.toggleVote(movie.id);
+                  movieStoreMethods.toggleVote(movie.id);
                 }}
               >
                 {movie.hasVoted ? 'Quitar voto' : 'Votar'}
               </button>
+              {/if}
 
             </div>
           </div>
@@ -81,7 +94,6 @@
       </div>
     {/if}
   </div>
-
 
   <div class="text-center text-gray-500 py-4">
     {#if connectionStatus}

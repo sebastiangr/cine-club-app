@@ -26,7 +26,7 @@ model User {
 model MovieRecommendation {
   id          String   @id @default(cuid())
   movieId     Int      // ID de TMDB
-  title       String
+  title       String?  // Make title optional
   posterPath  String?
   userId      String
   user        User     @relation(fields: [userId], references: [id])

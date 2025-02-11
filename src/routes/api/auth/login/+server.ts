@@ -3,9 +3,11 @@ import type { RequestHandler } from '@sveltejs/kit';
 import prisma from '$lib/server/db';
 import { verifyPassword } from '$lib/server/auth/password';
 import { createToken } from '$lib/server/auth/jwt';
+import { authenticateUser } from '$lib/server/auth'; // Your authentication logic
 
 export const POST: RequestHandler = async ({ request }) => {
   const { email, password } = await request.json();
+  const user = await authenticateUser(email, password);
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -26,5 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     return json({ error: 'Error al iniciar sesión' }, { status: 400 });
+  }
+
+  if (user) {
+    return json(user); // Return user data on successful login
+  } else {
+      return json({ error: 'Invalid credentials' }, { status: 401 });
   }
 };

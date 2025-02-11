@@ -1,5 +1,5 @@
-<script lang="ts">
-  import { auth } from '$lib/stores/auth';
+<script lang="ts">  
+  import { auth, authStore, login } from '$lib/stores/auth'; // Import the auth store
   
   let email = '';
   let password = '';
@@ -29,8 +29,7 @@
       localStorage.setItem('token', data.token);
       
       // Actualizar store de autenticación
-      auth.setUser(data.user);
-      auth.setToken(data.token);
+      login(data.user); // Update the auth store with user data
 
     } catch (err) {
       error = err instanceof Error ? err.message : 'Error al registrarse';
@@ -38,6 +37,25 @@
       loading = false;
     }
   }
+
+  const handleLogin = async () => {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }), // Use email and password for login
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+      login(user); // Update the auth store with user data
+    } else {
+        // Handle login error
+      error = 'Login failed. Please check your credentials.';
+      console.error('Login failed');
+    }
+  };
 </script>
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-6">
