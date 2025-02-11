@@ -64,7 +64,7 @@
       recommendedBy,
       recommendedAt: new Date(),
     });
-    recommendedBy = ''; // Reset the input after adding
+    // recommendedBy = ''; // Reset the input after adding
   }
 </script>
 
@@ -108,7 +108,7 @@
             console.log('Movie details:', details);
             console.log('Movie director:', details.director);
             searchTerm = ''; // Clear search term input
-            recommendedBy = ''; // Clear recommended by input
+            // recommendedBy = ''; // Clear recommended by input
           }}
         >
           {#if movie.poster_path}

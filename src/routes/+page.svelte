@@ -16,7 +16,7 @@
   });
 </script>
 
-<div class="max-w-4xl mx-auto space-y-8">
+<div class="max-w-7xl mx-auto space-y-8">
   <h1 class="text-3xl font-bold text-center">
     Recomendaciones de Películas
   </h1>
@@ -31,7 +31,7 @@
         Aún no hay películas recomendadas. ¡Sé el primero en añadir una!
       </p>
     {:else}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {#each $movieStore as movie}
           <div class="bg-white rounded-lg shadow-md overflow-hidden relative transform transition-transform hover:scale-95">
             <button

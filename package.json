@@ -24,7 +24,9 @@
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.16",
+		"@types/bcryptjs": "^2.4.6",
 		"@types/date-fns": "^2.5.3",
+		"@types/jsonwebtoken": "^9.0.8",
 		"@types/lodash": "^4.17.15",
 		"autoprefixer": "^10.4.20",
 		"eslint": "^9.18.0",
@@ -35,6 +37,7 @@
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.10",
+		"prisma": "^6.3.1",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^3.4.17",
@@ -43,8 +46,11 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@prisma/client": "^6.3.1",
 		"@tanstack/svelte-query": "^5.66.0",
+		"bcryptjs": "^2.4.3",
 		"date-fns": "^4.1.0",
+		"jsonwebtoken": "^9.0.2",
 		"lodash": "^4.17.21"
 	}
 }
