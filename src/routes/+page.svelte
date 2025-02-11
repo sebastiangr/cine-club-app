@@ -3,6 +3,7 @@
   import { movieStore } from '$lib/stores/movies';
   import { onMount } from 'svelte';
   import { checkConnection } from '$lib/services/tmdb';
+  import { LightSwitch } from '@skeletonlabs/skeleton';
 
   let connectionStatus = '';
 
@@ -13,8 +14,6 @@
       connectionStatus = (error as Error).message;
     }
   });
-
-  
 </script>
 
 <div class="max-w-4xl mx-auto space-y-8">
@@ -44,6 +43,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
+            
             <a href={`https://www.themoviedb.org/movie/${movie.id}`} target="_blank" rel="noopener noreferrer">
               {#if movie.poster_path}
                 <img
@@ -52,33 +52,41 @@
                   class="w-full h-96 object-cover"
                 />
               {/if}
-              <div class="p-4">
-                <h3 class="font-semibold text-lg">{movie.title}</h3>
-                <p class="text-sm text-gray-500">
-                  Recomendada por: {movie.recommendedBy || 'N.N.'} el {new Intl.DateTimeFormat('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(movie.recommendedAt)}
-                </p>
-                <p class="text-sm text-gray-500">
-                  Director: {movie.director || 'Desconocido'}
-                </p>
-                <p class="text-sm text-gray-500">
-                  Puntuación: {movie.vote_average || 'N/A'}
-                </p>
-                <p class="text-sm text-gray-500">
-                  Overview: {movie.overview || 'N/A'}
-                </p>                
-              </div>
             </a>
+
+            <div class="p-4">
+              <h3 class="font-semibold text-lg">{movie.title}</h3>
+              <p class="text-sm text-gray-500">
+                Votos: {movie.votes}
+              </p>
+              <p class="text-sm text-gray-500">
+                Recomendada por: {movie.recommendedBy || 'N.N.'} el {new Intl.DateTimeFormat('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(movie.recommendedAt)}
+              </p>
+              <p class="text-sm text-gray-500">
+                Director: {movie.director || 'Desconocido'}
+              </p>
+              
+              <button
+                class="mt-2 bg-blue-500 text-white py-1 px-3 rounded"
+                on:click={() => {
+                  movieStore.toggleVote(movie.id);
+                }}
+              >
+                {movie.hasVoted ? 'Quitar voto' : 'Votar'}
+              </button>
+
+            </div>
           </div>
         {/each}
       </div>
-
     {/if}
   </div>
+
 
   <div class="text-center text-gray-500 py-4">
     {#if connectionStatus}
       <p>{connectionStatus}</p>
     {/if}
+    <LightSwitch />
   </div>
-
 </div>

@@ -6,7 +6,7 @@
   import { writable } from 'svelte/store';
   import { movieStore } from '$lib/stores/movies'; // Import the movie store
   import { getMovieDetails } from '$lib/services/tmdb'; // Import the new function
-  
+
   let searchTerm = '';
   let error = '';
   let recommendedBy = ''; // New variable for the recommender's name
@@ -23,7 +23,15 @@
       try {
         const response = await searchMovies(term);
         console.log('Search results:', response);
+        
         searchResults.set(response.results);
+
+        // Obtener los detalles de las películas - mucho más lenta la precarga
+        // const detailedResults = await Promise.all(response.results.map(async (movie) => {
+        //   const { director } = await getMovieDetails(movie.id);
+        //   return { ...movie, director };
+        // }));
+        // searchResults.set(detailedResults);
       } catch (err) {
         console.error('Search error:', err);
         error = err instanceof Error ? err.message : 'Error en la búsqueda';
@@ -95,8 +103,8 @@
         <button
           class="w-full px-4 py-2 flex items-center gap-4 hover:bg-gray-50 transition"
           on:click={async () => {
-            addMovieWithRecommendation(movie);
             const details = await getMovieDetails(movie.id);
+            addMovieWithRecommendation(details);
             console.log('Movie details:', details);
             console.log('Movie director:', details.director);
             searchTerm = ''; // Clear search term input
@@ -120,16 +128,18 @@
             <p class="text-sm text-gray-500">
               {new Date(movie.release_date).getFullYear()}
             </p>
-            <p class="text-sm text-gray-500">
+
+            <!-- Director - mucho más lenta la precarga -->
+            <!-- <p class="text-sm text-gray-500">
               Director: {movie.director || 'Desconocido'}
-            </p>
+            </p> -->
           </div>
         </button>
       {/each}
     </div>
   {:else if searchTerm.length >= 2 && !$loading}
   <div class="bg-white shadow-lg rounded-lg divide-y absolute z-50">
-    <p class="text-center text-gray-500 py-4">
+    <p class="text-center text-gray-500 p-4">
       No se encontraron resultados para "{searchTerm}"
     </p>
   </div>    
