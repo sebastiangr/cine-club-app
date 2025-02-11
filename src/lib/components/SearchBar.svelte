@@ -36,11 +36,11 @@
     }
   }, 300);
 
-  const query = createQuery({
-    queryKey: ['movies', searchTerm],
-    queryFn: () => searchMovies(searchTerm),
-    enabled: searchTerm.length >= 2 // La query se ejecutará cuando searchTerm tenga 2 o más caracteres
-  });
+  // const query = createQuery({
+  //   queryKey: ['movies', searchTerm],
+  //   queryFn: () => searchMovies(searchTerm),
+  //   enabled: searchTerm.length >= 2 // La query se ejecutará cuando searchTerm tenga 2 o más caracteres
+  // });
 
   // Manejador del input
   function handleInput(event: Event) {
@@ -98,6 +98,7 @@
             addMovieWithRecommendation(movie);
             const details = await getMovieDetails(movie.id);
             console.log('Movie details:', details);
+            console.log('Movie director:', details.director);
             searchTerm = ''; // Clear search term input
             recommendedBy = ''; // Clear recommended by input
           }}

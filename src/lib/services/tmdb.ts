@@ -8,7 +8,7 @@ export interface Movie {
   poster_path: string;
   release_date: string;
   vote_average: number;
-  director: string | null;
+  director: string;
 }
 
 export interface SearchResponse {
@@ -24,7 +24,6 @@ export async function getMovieDetails(id: number): Promise<Movie> {
   if (!response.ok) {
     throw new Error(`Error fetching movie details: ${response.statusText}`);
   }
-
   const movie = await response.json();
 
   const creditsResponse = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${TMDB_API_KEY}`);
@@ -33,7 +32,11 @@ export async function getMovieDetails(id: number): Promise<Movie> {
   }
 
   const credits = await creditsResponse.json();
-  movie.director = credits.crew.find((crewMember: { job: string; }) => crewMember.job === 'Director')?.name ?? null;
+  console.log("Creditos:", credits);
+  // movie.director = credits.crew.find((crewMember: { job: string; }) => crewMember.job === 'Director')?.name ?? null;
+  // Busca el objeto del director en el array 'crew'
+  movie.director = credits.crew.find((crewMember: { job: string; name: string }) => crewMember.job === 'Director')?.name ?? null;
+  console.log("Director:", movie.director );
 
   return movie;
 }

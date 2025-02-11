@@ -3,7 +3,9 @@ import type { Movie } from '$lib/services/tmdb';
 
 export interface MovieRecommendation extends Movie {
   recommendedAt: Date;
-  recommendedBy: string; // Podríamos usar un ID de usuario real más adelante
+  recommendedBy: string;
+  director : string;
+  // Podríamos usar un ID de usuario real más adelante
 }
 
 function createMovieStore() {
@@ -30,3 +32,4 @@ function createMovieStore() {
 }
 
 export const movieStore = createMovieStore();
+
